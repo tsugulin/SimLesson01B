@@ -8,13 +8,11 @@ void Queue::initialize()
 
 void Queue::handleMessage(cMessage *msg)
 {
-    if (strcmp(msg->getName(), "patient") == 0) {
-        // 患者が到着
+    if (strcmp(msg->getName(), "patient") == 0) {       // 患者が到着した場合
         msg->setTimestamp(simTime());   // リードタイムの開始時間をセット
         queue.insert(msg);              // 待ち行列にメッセージを保管
-        send(new cMessage("request"), "out");   // リクエストをドクターへ
-    } else if (strcmp(msg->getName(), "call") == 0) {
-        // 医師からの呼び出し
+        send(new cMessage("request"), "out");   // リクエストを医師へ
+    } else if (strcmp(msg->getName(), "call") == 0) {   // 医師からの呼び出しがあった場合
         if (queue.getLength() > 0) {       // もし患者が待っていれば
             cMessage *patient = check_and_cast<cMessage *>(queue.pop());    // 待ち行列からメッセージを取り出す
             waitTime.collect(simTime() - patient->getTimestamp());          // 待ち時間をカウント
