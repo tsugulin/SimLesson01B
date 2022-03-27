@@ -3,11 +3,13 @@ Define_Module(Queue);
 
 void Queue::initialize()
 {
-   queue.setName("queue");              // 待ち行列に名前をつける
+   queue.setName("queue");      // 待ち行列に名前をつける
+   WATCH_MAP(msgKind);          // 変数の監視
 }
 
 void Queue::handleMessage(cMessage *msg)
 {
+    msgKind[(std::string)msg->getName()]++;  // メッセージの数をカウント
     if (strcmp(msg->getName(), "patient") == 0) {       // 患者が到着した場合
         msg->setTimestamp(simTime());   // リードタイムの開始時間をセット
         queue.insert(msg);              // 待ち行列にメッセージを保管
