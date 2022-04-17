@@ -4,7 +4,7 @@ network Simulation01	// モデル名をSimulation01とする
     submodules:					// モジュールの定義
         enter: Create {			// Createモジュールを継承してenterノードを定義とする
             parameters:
-                @display("p=74,88;i=block/source");		// 座標(74,88)にimages/block/source.pngを表示する
+                @display("p=74,88;i=block/source;t");		// 座標(74,88)にimages/block/source.pngを表示する。ノードに値を表示するラベル名として「t」を使用する
         }
         wait[2]: Queue {			// Queueモジュールを継承してwaitノードを２つ定義する
             parameters:
@@ -17,6 +17,8 @@ network Simulation01	// モデル名をSimulation01とする
     connections:						// モジュール間の接続の定義
         enter.out++ --> wait[0].in++;	// enterをwait0に接続する
         enter.out++ --> wait[1].in++;	// enterをwaitに接続する
+        wait[0].out2 --> enter.in++;	// wait0をenterに接続する
+        wait[1].out2 --> enter.in++;	// wait1をenterに接続する
         wait[0].out --> doctor[0].in;	// wait0をdoctor0に接続する
         wait[1].out --> doctor[1].in;	// wait1をdoctor1に接続する
         doctor[0].out --> wait[0].in++;	// doctor0をwait0に接続する
