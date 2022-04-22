@@ -12,18 +12,17 @@ void Create::initialize()
 
 void Create::handleMessage(cMessage *msg)
 {
-    if ( msg->isSelfMessage() ) {           // 患者が到着した場合、待合室に案内する
-        int j = intuniform(0, max-1);       // 乱数にて分岐先を決定
-        if (mode == "minimum")              // もし分岐方法が最小値方式ならば分岐先を変更
-            j = (nxt[0] <= nxt[1]) ? 0: 1;  // 待ち行列が少ない方を選択
-        send(new cMessage("patient"), "out", j);    // 患者を表すメッセージを待ち行列に向けて発信
-        nxt[j]++;                           // 待ち行列の長さを更新
-        showGUI(nxt[0], nxt[1]);            // GUI表示
+    if ( msg->isSelfMessage() ) {               // 患者が到着した場合、待合室に案内する
+        int j = intuniform(0, max-1);           // 乱数にて分岐先を決定
+        if (mode == "minimum")
+            j = (nxt[0] <= nxt[1]) ? 0: 1;      // もし分岐方法が最小値方式ならば分岐先を変更
+        nxt[j]++;                               // 待ち行列の長さを更新
+        showGUI(nxt[0], nxt[1]);                // GUI表示
+        send(new cMessage("patient"), "out", j);            // 患者を表すメッセージを待ち行列に向けて発信
         scheduleAt(simTime() + par("intervalTime"), msg);   // 次の患者を発生させるメッセージを自身に向けて発信
     } else {                                // 待合室から待ち状況が届いた場合
-        int n = (strcmp(msg->getArrivalGate()->getFullName(), "in[0]") == 0) ? 0: 1;   // 待合室のインデックス。0または1
-        int m = msg->getKind();             // 待ち行列の長さ
-        nxt[n] = m;                         // 待ち行列の長さを更新
+        int j = (strcmp(msg->getArrivalGate()->getFullName(), "in[0]") == 0) ? 0: 1;   // 待合室のインデックス。0または1
+        nxt[j] = msg->getKind();            // 待ち行列の長さを更新
         showGUI(nxt[0], nxt[1]);            // GUI表示
         delete msg;     // 待合室から届いたメッセージを削除
     }
